@@ -151,14 +151,6 @@ window.onload = function() {
     }
   }
 
-  // 手機虛擬方向鍵
-  if (document.getElementById('arrow-up')) {
-    document.getElementById('arrow-up').onclick = () => movePlayer([0,-1]);
-    document.getElementById('arrow-down').onclick = () => movePlayer([0,1]);
-    document.getElementById('arrow-left').onclick = () => movePlayer([-1,0]);
-    document.getElementById('arrow-right').onclick = () => movePlayer([1,0]);
-  }
-
   function movePlayer([dx,dy]) {
     let nx = player.x + dx, ny = player.y + dy;
     if (nx >= 0 && nx < gridSize && ny >= 0 && ny < gridSize && maze[ny][nx] === 0) {
@@ -201,7 +193,7 @@ window.onload = function() {
     ctx.beginPath();
     ctx.arc(energy.x * cellSize + cellSize/2, energy.y * cellSize + cellSize/2, cellSize/4, 0, 2 * Math.PI);
     ctx.fill();
-    // 主角自訂圖
+    // 主角圖片顯示
     const img = playerImgs[currentTheme];
     if (img.complete && img.naturalWidth > 0) {
       ctx.drawImage(img,
@@ -222,4 +214,10 @@ window.onload = function() {
   }
 
   startBtn.onclick = startGame;
+
+  // --- 虛擬方向鍵控制區 ---
+  document.getElementById('arrow-up').onclick = () => movePlayer([0,-1]);
+  document.getElementById('arrow-down').onclick = () => movePlayer([0,1]);
+  document.getElementById('arrow-left').onclick = () => movePlayer([-1,0]);
+  document.getElementById('arrow-right').onclick = () => movePlayer([1,0]);
 };

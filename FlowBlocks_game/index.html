@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>心流方塊 FlowBlocks</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game-container">
+    <canvas id="gameCanvas" tabindex="0"></canvas>
+    <div id="score">分數：0 | 最高分：0 | 關卡：1</div>
+    <select id="themeSelect">
+      <option value="classic">經典科技</option>
+      <option value="forest">童話森林</option>
+      <option value="cyber">賽博霓虹</option>
+      <option value="pixel">馬賽克像素</option>
+      <option value="candy">未來幻彩</option>
+    </select>
+    <button id="startBtn">開始遊戲</button>
+    <audio id="audio-eat" src="eat.mp3" preload="auto"></audio>
+    <audio id="audio-clear" src="clear.mp3" preload="auto"></audio>
+    <audio id="audio-fail" src="fail.mp3" preload="auto"></audio>
+    <div id="signature">設計：茹 願</div>
+    <div id="rules">操作說明：使用方向鍵或滑動螢幕移動主角，吃能量點，避開障礙，抵達右下角綠框即過關。</div>
+  </div>
+  <script src="main.js"></script>
+</body>
+</html>

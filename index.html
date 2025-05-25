@@ -18,11 +18,18 @@
       <option value="candy">未來幻彩</option>
     </select>
     <button id="startBtn">開始遊戲</button>
+    <!-- 保證方向鍵會出現 -->
+    <div id="mobile-controls">
+      <button class="arrow" id="arrow-up">▲</button><br>
+      <button class="arrow" id="arrow-left">◀</button>
+      <button class="arrow" id="arrow-down">▼</button>
+      <button class="arrow" id="arrow-right">▶</button>
+    </div>
     <audio id="audio-eat" src="eat.mp3" preload="auto"></audio>
     <audio id="audio-clear" src="clear.mp3" preload="auto"></audio>
     <audio id="audio-fail" src="fail.mp3" preload="auto"></audio>
     <div id="signature">設計：茹 願</div>
-    <div id="rules">操作說明：使用方向鍵或滑動螢幕移動主角，吃能量點，避開障礙，抵達右下角綠框即過關。</div>
+    <div id="rules">操作說明：使用方向鍵、滑動螢幕，或點擊下方箭頭移動主角，吃能量點，避開障礙，抵達右下角綠框即過關。</div>
   </div>
   <script src="main.js"></script>
 </body>

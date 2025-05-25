@@ -18,12 +18,16 @@
       <option value="candy">未來幻彩</option>
     </select>
     <button id="startBtn">開始遊戲</button>
-    <!-- 保證方向鍵會出現 -->
+    <!-- 圓形十字方向鍵 -->
     <div id="mobile-controls">
-      <button class="arrow" id="arrow-up">▲</button><br>
-      <button class="arrow" id="arrow-left">◀</button>
-      <button class="arrow" id="arrow-down">▼</button>
-      <button class="arrow" id="arrow-right">▶</button>
+      <div class="circle-pad">
+        <button class="arrow arrow-up" id="arrow-up">▲</button>
+        <div>
+          <button class="arrow arrow-left" id="arrow-left">◀</button>
+          <button class="arrow arrow-down" id="arrow-down">▼</button>
+          <button class="arrow arrow-right" id="arrow-right">▶</button>
+        </div>
+      </div>
     </div>
     <audio id="audio-eat" src="eat.mp3" preload="auto"></audio>
     <audio id="audio-clear" src="clear.mp3" preload="auto"></audio>

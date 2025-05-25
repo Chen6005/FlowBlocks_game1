@@ -68,7 +68,9 @@ window.onload = function() {
     themeSelect.blur();
     startBtn.blur();
     canvas.focus();
-    document.addEventListener('keydown', handleKey);
+    gameRunning = true;
+    document.addEventListener('keydown', keyDownHandler);
+    document.addEventListener('keyup', keyUpHandler);
     canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
     canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
     gameInterval = setInterval(update, 900 - level*30);
@@ -76,24 +78,32 @@ window.onload = function() {
 
   function endGame(win = false) {
     clearInterval(gameInterval);
-    document.removeEventListener('keydown', handleKey);
+    clearInterval(moveInterval);
+    gameRunning = false;
+    document.removeEventListener('keydown', keyDownHandler);
+    document.removeEventListener('keyup', keyUpHandler);
     canvas.removeEventListener('touchstart', handleTouchStart);
     canvas.removeEventListener('touchend', handleTouchEnd);
     startBtn.style.display = 'block';
     if (win) {
       audioClear.play();
-      alert('過關！進入下一關');
-      level++;
-      resetLevel();
-      gameInterval = setInterval(update, 900 - level*30);
+      setTimeout(() => {
+        alert('過關！進入下一關');
+        level++;
+        resetLevel();
+        gameInterval = setInterval(update, 900 - level*30);
+        gameRunning = true;
+      }, 50);
     } else {
       audioFail.play();
-      alert('遊戲結束！分數：' + score);
-      if (score > highScore) {
-        highScore = score;
-        localStorage.setItem('fb_highScore', highScore);
-      }
-      updateScore();
+      setTimeout(() => {
+        alert('遊戲結束！分數：' + score);
+        if (score > highScore) {
+          highScore = score;
+          localStorage.setItem('fb_highScore', highScore);
+        }
+        updateScore();
+      }, 80);
     }
   }
 
@@ -127,11 +137,68 @@ window.onload = function() {
     return empty[Math.floor(Math.random() * empty.length)] || {x: 1, y: 1};
   }
 
-  function handleKey(e) {
-    let keyMap = {ArrowUp: [0,-1], ArrowDown: [0,1], ArrowLeft: [-1,0], ArrowRight: [1,0]};
-    if (!keyMap[e.key]) return;
-    movePlayer(keyMap[e.key]);
+  // 長按方向鍵與箭頭可連續移動
+  let moveInterval = null;
+  let currentMoveDir = null;
+  let gameRunning = false;
+
+  // 鍵盤
+  function keyDownHandler(e) {
+    let keyMap = {ArrowUp:[0,-1], ArrowDown:[0,1], ArrowLeft:[-1,0], ArrowRight:[1,0]};
+    if (keyMap[e.key]) {
+      if (!moveInterval || currentMoveDir !== e.key) {
+        clearInterval(moveInterval);
+        movePlayer(keyMap[e.key]);
+        currentMoveDir = e.key;
+        moveInterval = setInterval(() => movePlayer(keyMap[e.key]), 120);
+      }
+      e.preventDefault();
+    }
   }
+  function keyUpHandler(e) {
+    let keyMap = {ArrowUp:true, ArrowDown:true, ArrowLeft:true, ArrowRight:true};
+    if (keyMap[e.key]) {
+      clearInterval(moveInterval);
+      moveInterval = null;
+      currentMoveDir = null;
+    }
+  }
+
+  // 虛擬方向鍵/手機
+  const arrowOrder = ['arrow-up','arrow-down','arrow-left','arrow-right'];
+  const dirs = [[0,-1],[0,1],[-1,0],[1,0]];
+  arrowOrder.forEach((id, idx) => {
+    let btn = document.getElementById(id);
+    btn.addEventListener('mousedown', () => {
+      clearInterval(moveInterval);
+      movePlayer(dirs[idx]);
+      moveInterval = setInterval(() => movePlayer(dirs[idx]), 120);
+      currentMoveDir = id;
+    });
+    btn.addEventListener('mouseup', () => {
+      clearInterval(moveInterval);
+      moveInterval = null;
+      currentMoveDir = null;
+    });
+    btn.addEventListener('mouseleave', () => {
+      clearInterval(moveInterval);
+      moveInterval = null;
+      currentMoveDir = null;
+    });
+    btn.addEventListener('touchstart', e => {
+      e.preventDefault();
+      clearInterval(moveInterval);
+      movePlayer(dirs[idx]);
+      moveInterval = setInterval(() => movePlayer(dirs[idx]), 120);
+      currentMoveDir = id;
+    });
+    btn.addEventListener('touchend', e => {
+      e.preventDefault();
+      clearInterval(moveInterval);
+      moveInterval = null;
+      currentMoveDir = null;
+    });
+  });
 
   let touchStartX, touchStartY;
   function handleTouchStart(e) {
@@ -152,6 +219,7 @@ window.onload = function() {
   }
 
   function movePlayer([dx,dy]) {
+    if (!gameRunning) return;
     let nx = player.x + dx, ny = player.y + dy;
     if (nx >= 0 && nx < gridSize && ny >= 0 && ny < gridSize && maze[ny][nx] === 0) {
       player.x = nx; player.y = ny;
@@ -214,10 +282,4 @@ window.onload = function() {
   }
 
   startBtn.onclick = startGame;
-
-  // --- 虛擬方向鍵控制區 ---
-  document.getElementById('arrow-up').onclick = () => movePlayer([0,-1]);
-  document.getElementById('arrow-down').onclick = () => movePlayer([0,1]);
-  document.getElementById('arrow-left').onclick = () => movePlayer([-1,0]);
-  document.getElementById('arrow-right').onclick = () => movePlayer([1,0]);
 };
